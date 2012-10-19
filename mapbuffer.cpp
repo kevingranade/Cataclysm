@@ -1,6 +1,7 @@
 #include "mapbuffer.h"
 #include "game.h"
 #include "output.h"
+#include "gzstream.h"
 #include <fstream>
 
 mapbuffer MAPBUFFER;
@@ -54,8 +55,8 @@ submap* mapbuffer::lookup_submap(int x, int y, int z)
 void mapbuffer::save()
 {
  std::map<tripoint, submap*>::iterator it;
- std::ofstream fout;
- fout.open("save/maps.txt");
+ ogzstream fout;
+ fout.open("save/maps.txt.gz");
 
  fout << submap_list.size() << std::endl;
  int percent = 0;
@@ -148,9 +149,9 @@ void mapbuffer::load()
   return;
  }
  std::map<tripoint, submap*>::iterator it;
- std::ifstream fin;
- fin.open("save/maps.txt");
- if (!fin.is_open())
+ igzstream fin;
+ fin.open("save/maps.txt.gz");
+ if (!fin.rdbuf()->is_open())
   return;
 
  char line[SEEX];

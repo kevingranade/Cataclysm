@@ -52,7 +52,7 @@ bool vehicle::player_in_control (player *p)
     return part_with_feature(veh_part, vpf_controls, false) >= 0 && p->in_vehicle;
 }
 
-void vehicle::load (std::ifstream &stin)
+void vehicle::load (igzstream &stin)
 {
     int t;
     int fdir, mdir, skd, prts, cr_on;
@@ -117,7 +117,7 @@ void vehicle::load (std::ifstream &stin)
     precalc_mounts (0, face.dir());
 }
 
-void vehicle::save (std::ofstream &stout)
+void vehicle::save (ogzstream &stout)
 {
     stout <<
         int(type) << " " <<

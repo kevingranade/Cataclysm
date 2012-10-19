@@ -1782,6 +1782,7 @@ void game::save()
 {
  std::stringstream playerfile, masterfile;
  std::ofstream fout;
+
  playerfile << "save/" << u.name << ".sav";
  masterfile << "save/master.gsav";
  fout.open(playerfile.str().c_str());

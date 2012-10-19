@@ -20,7 +20,7 @@ CFLAGS = $(WARNINGS) $(DEBUG) $(PROFILE) $(OTHERS)
 ifeq ($(OS), Msys)
 LDFLAGS = -static -lpdcurses
 else 
-LDFLAGS = -lncurses
+LDFLAGS = -L. -lncurses -lgzstream -lz
 endif
 
 SOURCES = $(wildcard *.cpp)

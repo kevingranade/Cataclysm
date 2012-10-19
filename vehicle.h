@@ -5,6 +5,7 @@
 #include "color.h"
 #include "item.h"
 #include "veh_type.h"
+#include "gzstream.h"
 #include <vector>
 #include <string>
 #include <fstream>
@@ -117,10 +118,10 @@ public:
     void init_state();
 
 // load and init vehicle data from stream. This implies valid save data!
-    void load (std::ifstream &stin);
+    void load (igzstream &stin);
 
 // Save vehicle data to stream
-    void save (std::ofstream &stout);
+    void save (ogzstream &stout);
 
 // get vpart type info for part number (part at given vector index)
     const vpart_info& part_info (int index);
