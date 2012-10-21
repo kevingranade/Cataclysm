@@ -12,7 +12,7 @@ DDIR = .deps
 
 TARGET = cataclysm.exe
 
-CXX = i486-mingw32-g++
+CXX = g++
 
 LINKER = i486-mingw32-ld
 LINKERFLAGS = -Wl,-stack,12000000,-subsystem,windows
