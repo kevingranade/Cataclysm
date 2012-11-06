@@ -69,6 +69,7 @@ nc_color invert_color(nc_color c)
    case c_pink:    return i_magenta;
    case c_brown:
    case c_yellow:  return i_brown;
+   default:        return i_ltgray;
   }
  }
  switch (c) {
@@ -87,6 +88,7 @@ nc_color invert_color(nc_color c)
   case c_ltblue:  return i_ltblue;
   case c_ltcyan:  return i_ltcyan;
   case c_pink:    return i_pink;
+  default:        return i_white;
  }
 }
 
@@ -242,7 +244,7 @@ void draw_tabs(WINDOW *w, int active_tab, ...)
  va_list ap;
  va_start(ap, active_tab);
  char *tmp;
- while (tmp = va_arg(ap, char *))
+ while ((tmp = va_arg(ap, char *)))
   labels.push_back((std::string)(tmp));
  va_end(ap);
 
