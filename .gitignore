@@ -1,2 +1,5 @@
 cataclysm
 obj/
+save/
+data/*.txt
+data/*.template
