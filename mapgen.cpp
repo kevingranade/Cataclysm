@@ -665,6 +665,17 @@ void map::draw_map(oter_id terrain_type, oter_id t_north, oter_id t_east,
   if (terrain_type == ot_road_ew)
    rotate(1);
   place_items(mi_road, 5, 0, 0, SEEX * 2 - 1, SEEX * 2 - 1, false, turn);
+
+  if (rn == 1) { // we're in town, so plop down a few zombies
+   if (one_in(4)) { // 25% chance of zombies
+    for (int i = 0; i < 5; i++) {
+     int x = rng(0, SEEX * 2 - 1), y = rng(0, SEEY * 2 - 1);
+      if (ter(x, y) == t_pavement)
+       add_spawn(mon_zombie, 1, x, y);
+    }
+   }
+  }
+
   break;
 
  case ot_road_ne:
@@ -701,6 +712,17 @@ void map::draw_map(oter_id terrain_type, oter_id t_north, oter_id t_east,
   if (terrain_type == ot_road_wn)
    rotate(3);
   place_items(mi_road, 5, 0, 0, SEEX * 2 - 1, SEEX * 2 - 1, false, turn);
+
+  if (rn == 1) { // we're in town, so plop down a few zombies
+   if (one_in(4)) { // 25% chance of zombies
+    for (int i = 0; i < 5; i++) {
+     int x = rng(0, SEEX * 2 - 1), y = rng(0, SEEY * 2 - 1);
+      if (ter(x, y) == t_pavement)
+       add_spawn(mon_zombie, 1, x, y);
+    }
+   }
+  }
+
   break;
 
  case ot_road_nes:
@@ -737,6 +759,17 @@ void map::draw_map(oter_id terrain_type, oter_id t_north, oter_id t_east,
   if (terrain_type == ot_road_new)
    rotate(3);
   place_items(mi_road, 5, 0, 0, SEEX * 2 - 1, SEEX * 2 - 1, false, turn);
+
+  if (rn == 1) { // we're in town, so plop down a few zombies
+   if (one_in(4)) { // 25% chance of zombies
+    for (int i = 0; i < 5; i++) {
+     int x = rng(0, SEEX * 2 - 1), y = rng(0, SEEY * 2 - 1);
+      if (ter(x, y) == t_pavement)
+       add_spawn(mon_zombie, 1, x, y);
+    }
+   }
+  }
+
   break;
 
  case ot_road_nesw:
@@ -798,6 +831,17 @@ void map::draw_map(oter_id terrain_type, oter_id t_north, oter_id t_east,
    place_items(mi_road,  5, 0, 0, SEEX * 2 - 1, SEEX * 2 - 1, false, turn);
   if (terrain_type == ot_road_nesw_manhole)
    ter(rng(6, SEEX * 2 - 6), rng(6, SEEX * 2 - 6)) = t_manhole_cover;
+
+  if (rn == 1) { // we're in town, so plop down a few zombies
+   if (one_in(4)) { // 25% chance of zombies
+    for (int i = 0; i < 5 * rn; i++) { // extra zombies for plazas
+     int x = rng(0, SEEX * 2 - 1), y = rng(0, SEEY * 2 - 1);
+      if (ter(x, y) == t_pavement)
+       add_spawn(mon_zombie, 1, x, y);
+    }
+   }
+  }
+
   break;
 
  case ot_bridge_ns:
@@ -1202,6 +1246,12 @@ void map::draw_map(oter_id terrain_type, oter_id t_north, oter_id t_east,
     }
    }
    place_items(mi_rare, 60, 0, 0, SEEX * 2 - 1, SEEY * 2 - 1, false, turn);
+  } else if (!one_in(4)) { // No insects; probably zombies
+   for (int i = 0; i < 8; i++) {
+    int x = rng(0, SEEX * 2 - 1), y = rng(0, SEEY * 2 - 1);
+    if (ter(x, y) == t_floor)
+     add_spawn(mon_zombie, 1, x, y);
+   }
   }
 
   if (terrain_type == ot_house_east  || terrain_type == ot_house_base_east)
@@ -1366,6 +1416,15 @@ void map::draw_map(oter_id terrain_type, oter_id t_north, oter_id t_east,
   place_items(mi_road,		12, 0,      0,  SEEX*2 - 1, tw - 1, false, 0);
   place_items(mi_behindcounter,	70, rw - 4, tw + 1, rw - 1, tw + 2, false, 0);
   place_items(mi_softdrugs,	12, rw - 1, bw - 2, rw - 1, bw - 2, false, 0);
+
+  if (!one_in(4)) { // 75% chance of zombies
+   for (int i = 0; i < 8; i++) {
+    int x = rng(0, SEEX * 2 - 1), y = rng(0, SEEY * 2 - 1);
+    if (ter(x, y) == t_floor)
+     add_spawn(mon_zombie, 1, x, y);
+   }
+  }
+
   if (terrain_type == ot_s_gas_east)
    rotate(1);
   if (terrain_type == ot_s_gas_south)
@@ -1438,6 +1497,15 @@ void map::draw_map(oter_id terrain_type, oter_id t_north, oter_id t_east,
   place_items(mi_fridgesnacks,	74, cw + 2, mw - 1, rw - 1, mw - 1, false, 0);
   place_items(mi_harddrugs,	88, lw + 2, bw - 1, cw - 2, bw - 1, false, 0);
   place_items(mi_behindcounter,	78, lw + 1, tw + 1, lw + 4, tw + 5, false, 0);
+
+  if (!one_in(4)) { // 75% chance of zombies
+   for (int i = 0; i < 8; i++) {
+    int x = rng(0, SEEX * 2 - 1), y = rng(0, SEEY * 2 - 1);
+    if (ter(x, y) == t_floor)
+     add_spawn(mon_zombie, 1, x, y);
+   }
+  }
+
   if (terrain_type == ot_s_pharm_east)
    rotate(1);
   if (terrain_type == ot_s_pharm_south)
@@ -1504,6 +1572,15 @@ void map::draw_map(oter_id terrain_type, oter_id t_north, oter_id t_east,
    place_items(mi_snacks,    50, i, 5, i, 6, false, 0);
    place_items(mi_magazines, 70, i, 7, i, 7, false, 0);
   }
+
+  if (!one_in(4)) { // 75% chance of zombies
+   for (int i = 0; i < 12; i++) {
+    int x = rng(0, SEEX * 2 - 1), y = rng(0, SEEY * 2 - 1);
+    if (ter(x, y) == t_floor)
+     add_spawn(mon_zombie, 1, x, y);
+   }
+  }
+
   if (terrain_type == ot_s_grocery_east)
    rotate(1);
   if (terrain_type == ot_s_grocery_south)
@@ -1626,6 +1703,15 @@ void map::draw_map(oter_id terrain_type, oter_id t_north, oter_id t_east,
   else
    place_items(mi_cleaning,	74, 15, 12, 17, 12, false, 0);
   place_items(mi_mischw,	90, 20,  4, 20, 19, false, 0);
+
+  if (!one_in(4)) { // 75% chance of zombies
+   for (int i = 0; i < 8; i++) {
+    int x = rng(0, SEEX * 2 - 1), y = rng(0, SEEY * 2 - 1);
+    if (ter(x, y) == t_floor)
+     add_spawn(mon_zombie, 1, x, y);
+   }
+  }
+
   if (terrain_type == ot_s_hardware_east)
    rotate(1);
   if (terrain_type == ot_s_hardware_south)
@@ -1696,6 +1782,15 @@ void map::draw_map(oter_id terrain_type, oter_id t_north, oter_id t_east,
   place_items(mi_consumer_electronics, 85, 4, 4, 4, SEEY * 2 - 10, false,
               turn - 50);
   place_items(mi_consumer_electronics, 85, 5, 4, 8, 4, false, turn - 50);
+
+  if (!one_in(4)) { // 75% chance of zombies
+   for (int i = 0; i < 8; i++) {
+    int x = rng(0, SEEX * 2 - 1), y = rng(0, SEEY * 2 - 1);
+    if (ter(x, y) == t_floor)
+     add_spawn(mon_zombie, 1, x, y);
+   }
+  }
+
   if (terrain_type == ot_s_electronics_east)
    rotate(1);
   if (terrain_type == ot_s_electronics_south)
@@ -1765,6 +1860,14 @@ void map::draw_map(oter_id terrain_type, oter_id t_north, oter_id t_east,
   if (!one_in(4))
    place_items(mi_allsporting,	92, lw + 1, cw + 1, rw - 1, bw - 1, false, 0);
   
+  if (!one_in(4)) { // 75% chance of zombies
+   for (int i = 0; i < 8; i++) {
+    int x = rng(0, SEEX * 2 - 1), y = rng(0, SEEY * 2 - 1);
+    if (ter(x, y) == t_floor)
+     add_spawn(mon_zombie, 1, x, y);
+   }
+  }
+
   if (terrain_type == ot_s_sports_east)
    rotate(1);
   if (terrain_type == ot_s_sports_south)
@@ -1825,6 +1928,14 @@ void map::draw_map(oter_id terrain_type, oter_id t_north, oter_id t_east,
   place_items(mi_trash,		30,  5, 14,  7, 14, false, 0);
   place_items(mi_trash,		30, 18, 15, 18, 17, false, 0);
   
+  if (!one_in(4)) { // 75% chance of zombies
+   for (int i = 0; i < 8; i++) {
+    int x = rng(0, SEEX * 2 - 1), y = rng(0, SEEY * 2 - 1);
+    if (ter(x, y) == t_floor)
+     add_spawn(mon_zombie, 1, x, y);
+   }
+  }
+
   if (terrain_type == ot_s_liquor_east)
    rotate(1);
   if (terrain_type == ot_s_liquor_south)
@@ -1878,6 +1989,15 @@ void map::draw_map(oter_id terrain_type, oter_id t_north, oter_id t_east,
   place_items(mi_ammo,		93,  3, 11,  3, 13, false, 0);
   place_items(mi_allguns,	12,  5, 16, 17, 16, false, 0);
   place_items(mi_gunxtras,	67, 16, 13, 19, 13, false, 0);
+
+  if (!one_in(4)) { // 75% chance of zombies
+   for (int i = 0; i < 8; i++) {
+    int x = rng(0, SEEX * 2 - 1), y = rng(0, SEEY * 2 - 1);
+    if (ter(x, y) == t_floor)
+     add_spawn(mon_zombie, 1, x, y);
+   }
+  }
+
   if (terrain_type == ot_s_gun_east)
    rotate(1);
   if (terrain_type == ot_s_gun_south)
@@ -1962,6 +2082,14 @@ void map::draw_map(oter_id terrain_type, oter_id t_north, oter_id t_east,
     break;
   }
   
+  if (!one_in(4)) { // 75% chance of zombies
+   for (int i = 0; i < 8; i++) {
+    int x = rng(0, SEEX * 2 - 1), y = rng(0, SEEY * 2 - 1);
+    if (ter(x, y) == t_floor)
+     add_spawn(mon_zombie, 1, x, y);
+   }
+  }
+
   if (terrain_type == ot_s_clothes_east)
    rotate(1);
   if (terrain_type == ot_s_clothes_south)
@@ -2021,6 +2149,15 @@ void map::draw_map(oter_id terrain_type, oter_id t_north, oter_id t_east,
   place_items(mi_novels,	96,  3,  8, 15,  9, false, 0);
   place_items(mi_manuals,	92,  3, 12, 15, 13, false, 0);
   place_items(mi_textbooks,	88,  3, 16, 15, 16, false, 0);
+
+  if (one_in(2)) { // 50% chance of zombies
+   for (int i = 0; i < 8; i++) {
+    int x = rng(0, SEEX * 2 - 1), y = rng(0, SEEY * 2 - 1);
+    if (ter(x, y) == t_floor)
+     add_spawn(mon_zombie, 1, x, y);
+   }
+  }
+
   if (terrain_type == ot_s_library_east)
    rotate(1);
   if (terrain_type == ot_s_library_south)
@@ -2144,6 +2281,14 @@ void map::draw_map(oter_id terrain_type, oter_id t_north, oter_id t_east,
    square(this, t_dumpster, rn, 22, rn + 2, 23);
    place_items(mi_trash,  40, rn, 22, rn + 3, 23, false, 0);
    place_items(mi_fridge, 50, rn, 22, rn + 3, 23, false, 0);
+  }
+
+  if (!one_in(4)) { // 75% chance of zombies
+   for (int i = 0; i < 15; i++) {
+    int x = rng(0, SEEX * 2 - 1), y = rng(0, SEEY * 2 - 1);
+    if (ter(x, y) == t_floor)
+     add_spawn(mon_zombie, 1, x, y);
+   }
   }
 
   if (terrain_type == ot_s_restaurant_east)
