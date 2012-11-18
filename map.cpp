@@ -764,6 +764,23 @@ point map::random_outdoor_tile()
  return options[rng(0, options.size() - 1)];
 }
 
+bool map::has_adjacent_furniture(int x, int y)
+{
+ for (int i = -1; i <= 1; i += 2)
+  for (int j = -1; j <= 1; j += 2)
+   switch( ter(i, j) ) {
+    case t_fridge:
+    case t_dresser:
+    case t_rack:
+    case t_bookcase:
+     return true; true;
+     break;
+    default:
+     break;
+   }
+ return false;
+}
+
 bool map::bash(int x, int y, int str, std::string &sound, int *res)
 {
  sound = "";
@@ -848,7 +865,7 @@ bool map::bash(int x, int y, int str, std::string &sound, int *res)
  case t_door_c:
  case t_door_locked:
  case t_door_locked_alarm:
-  result = rng(0, 40);
+  result = rng(0, has_adjacent_furniture(x, y) ? 40 : 50);
   if (res) *res = result;
   if (str >= result) {
    sound += "smash!";
@@ -861,7 +878,7 @@ bool map::bash(int x, int y, int str, std::string &sound, int *res)
   break;
 
  case t_door_b:
-  result = rng(0, 30);
+  result = rng(0, has_adjacent_furniture(x, y) ? 30 : 40);
   if (res) *res = result;
   if (str >= result) {
    sound += "crash!";
@@ -891,7 +908,7 @@ bool map::bash(int x, int y, int str, std::string &sound, int *res)
   break;
 
  case t_door_boarded:
-  result = dice(3, 50);
+  result = rng(0, has_adjacent_furniture(x, y) ? 50 : 60);
   if (res) *res = result;
   if (str >= result) {
    sound += "crash!";
