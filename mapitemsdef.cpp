@@ -54,7 +54,7 @@ void game::init_mapitems()
 	itm_water, itm_oj, itm_cola, itm_rootbeer, itm_milk, itm_V8, itm_apple,
 	itm_sandwich_t, itm_mushroom, itm_blueberries, itm_strawberries, 
 	itm_tomato, itm_broccoli, itm_zucchini, itm_frozen_dinner, itm_vodka,
-	itm_apple_cider, NULL);
+	itm_apple_cider, itm_beer, NULL);
 
  setvector(
    mapitems[mi_home_hw],
@@ -108,7 +108,7 @@ void game::init_mapitems()
    mapitems[mi_fridgesnacks],
 	itm_water, itm_oj, itm_apple_cider, itm_energy_drink, itm_cola,
 	itm_rootbeer, itm_milk, itm_V8, itm_sandwich_t, itm_frozen_dinner,
-	itm_pizza, itm_pie, NULL);
+	itm_pizza, itm_pie, itm_beer, NULL);
 
  setvector(
    mapitems[mi_behindcounter],
@@ -217,7 +217,7 @@ void game::init_mapitems()
 
  setvector(
    mapitems[mi_alcohol],
-	itm_whiskey, itm_vodka, itm_rum, itm_tequila, NULL);
+	itm_whiskey, itm_vodka, itm_rum, itm_tequila, itm_beer, NULL);
 
  setvector(
    mapitems[mi_pool_table],
