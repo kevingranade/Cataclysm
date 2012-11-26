@@ -823,6 +823,7 @@ bool map::bash(int x, int y, int str, std::string &sound, int *res)
    int num_boards = rng(0, 2);
    for (int i = 0; i < num_boards; i++)
     add_item(x, y, (*itypes)[itm_2x4], 0);
+   add_item(x, y, (*itypes)[itm_nail], 0, rng(1, 3));
    return true;
   } else {
    sound += "whump!";
@@ -839,6 +840,7 @@ bool map::bash(int x, int y, int str, std::string &sound, int *res)
    int num_boards = rng(3, 8);
    for (int i = 0; i < num_boards; i++)
     add_item(x, y, (*itypes)[itm_2x4], 0);
+   add_item(x, y, (*itypes)[itm_nail], 0, rng(6, 16));
    return true;
   } else {
    sound += "whump!";
@@ -855,6 +857,7 @@ bool map::bash(int x, int y, int str, std::string &sound, int *res)
    int num_boards = rng(4, 10);
    for (int i = 0; i < num_boards; i++)
     add_item(x, y, (*itypes)[itm_2x4], 0);
+   add_item(x, y, (*itypes)[itm_nail], 0, rng(8, 20));
    return true;
   } else {
    sound += "whump!";
@@ -886,6 +889,7 @@ bool map::bash(int x, int y, int str, std::string &sound, int *res)
    int num_boards = rng(2, 6);
    for (int i = 0; i < num_boards; i++)
     add_item(x, y, (*itypes)[itm_2x4], 0);
+   add_item(x, y, (*itypes)[itm_nail], 0, rng(4, 12));
    return true;
   } else {
    sound += "wham!";
@@ -916,6 +920,7 @@ bool map::bash(int x, int y, int str, std::string &sound, int *res)
    int num_boards = rng(0, 2);
    for (int i = 0; i < num_boards; i++)
     add_item(x, y, (*itypes)[itm_2x4], 0);
+   add_item(x, y, (*itypes)[itm_nail], 0, rng(1, 3));
    return true;
   } else {
    sound += "wham!";
@@ -932,6 +937,7 @@ bool map::bash(int x, int y, int str, std::string &sound, int *res)
    int num_boards = rng(0, 2) * rng(0, 1);
    for (int i = 0; i < num_boards; i++)
     add_item(x, y, (*itypes)[itm_2x4], 0);
+   add_item(x, y, (*itypes)[itm_nail], 0, rng(1, 3));
    return true;
   } else {
    sound += "wham!";
@@ -975,6 +981,7 @@ bool map::bash(int x, int y, int str, std::string &sound, int *res)
    int num_boards = rng(4, 12);
    for (int i = 0; i < num_boards; i++)
     add_item(x, y, (*itypes)[itm_2x4], 0);
+   add_item(x, y, (*itypes)[itm_nail], 0, rng(8, 24));
    return true;
   } else {
    sound += "whump.";
@@ -1087,6 +1094,8 @@ bool map::bash(int x, int y, int str, std::string &sound, int *res)
    int num_boards = rng(1, 5);
    for (int i = 0; i < num_boards; i++)
     add_item(x, y, (*itypes)[itm_2x4], 0);
+   add_item(x, y, (*itypes)[itm_nail], 0, rng(2, 10));
+
    return true;
   } else {
    sound += "wham!";
@@ -1131,6 +1140,8 @@ void map::destroy(game *g, int x, int y, bool makesound)
    for (int j = y - 2; j <= y + 2; j++) {
     if (move_cost(i, j) > 0 && one_in(6))
      add_item(i, j, g->itypes[itm_2x4], 0);
+    if (move_cost(i, j) > 0 && one_in(6))
+      add_item(i, j, g->itypes[itm_nail], 0, 3);
    }
   }
   break;
@@ -1143,6 +1154,8 @@ void map::destroy(game *g, int x, int y, bool makesound)
      add_item(i, j, g->itypes[itm_rock], 0);
     if (move_cost(i, j) > 0 && one_in(4))
      add_item(i, j, g->itypes[itm_2x4], 0);
+    if (move_cost(i, j) > 0 && one_in(8))
+      add_item(i, j, g->itypes[itm_nail], 0, 4);
    }
   }
   ter(x, y) = t_rubble;
