@@ -27,7 +27,7 @@ void game::init_mapitems()
  setvector(
    mapitems[mi_road],
 	itm_muffler, itm_pipe, itm_motor, itm_wheel, itm_big_wheel, itm_seat, 
-    itm_combustion_small, itm_combustion, NULL);
+        itm_combustion_small, itm_combustion, NULL);
 
  setvector(
    mapitems[mi_livingroom],
@@ -180,9 +180,9 @@ void game::init_mapitems()
 
  setvector(
    mapitems[mi_consumer_electronics],
-        itm_amplifier, itm_antenna, itm_battery, itm_soldering_iron,
-        itm_screwdriver, itm_processor, itm_RAM, itm_mp3, itm_flashlight,
-        itm_radio, itm_hotplate, itm_receiver, itm_transponder, itm_tazer,
+	itm_amplifier, itm_antenna, itm_battery, itm_soldering_iron,
+	itm_screwdriver, itm_processor, itm_RAM, itm_mp3, itm_flashlight,
+	itm_radio, itm_hotplate, itm_receiver, itm_transponder, itm_tazer,
 	itm_two_way_radio, itm_usb_drive, itm_manual_electronics, NULL);
 
  setvector(
@@ -199,8 +199,8 @@ void game::init_mapitems()
 	itm_bb, itm_bolt_steel, itm_bbgun, itm_crossbow, itm_manual_knives,
 	itm_manual_first_aid, itm_manual_traps, itm_lighter, itm_sewing_kit,
 	itm_hammer, itm_flashlight, itm_water_purifier, itm_radio, itm_beartrap,
-        itm_UPS_off, itm_string_36, itm_longbow, itm_compbow, itm_arrow_wood,
-        itm_arrow_cf, NULL);
+	itm_UPS_off, itm_string_36, itm_longbow, itm_compbow, itm_arrow_wood,
+	itm_arrow_cf, NULL);
 
  setvector(
    mapitems[mi_allsporting],
