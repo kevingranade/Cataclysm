@@ -1292,11 +1292,7 @@ int item::pick_reload_ammo(player &u, bool interactive)
   debugmsg("RELOADING NON-GUN NON-TOOL");
   return false;
  }
- bool has_m203 = false;
- for (int i = 0; i < contents.size() && !has_m203; i++) {
-  if (contents[i].typeId() == itm_m203)
-   has_m203 = true;
- }
+ bool has_m203 = -1 != has_gunmod (itm_m203);
 
  std::vector<int> am;	// List of indicies of valid ammo
 
