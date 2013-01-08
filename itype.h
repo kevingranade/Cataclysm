@@ -297,6 +297,7 @@ IF_AMMO_STREAM,		// Doesn't stop once it hits a monster
 // Weapon mode flags
 IF_MODE_AUX, // A gunmod with a firing mode
 IF_MODE_BURST, // A burst of attacks
+IF_MODE_BURST_3, // A burst of 3 rounds
 
 NUM_ITEM_FLAGS
 };

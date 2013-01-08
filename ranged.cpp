@@ -106,6 +106,8 @@ void game::fire(player &p, int tarx, int tary, std::vector<point> &trajectory,
  int num_shots = 1;
  if (burst)
   num_shots = weapon->burst_size();
+ if (mode == IF_MODE_BURST_3)
+  num_shots = 3;
  if (num_shots > weapon->num_charges() && !weapon->has_flag(IF_CHARGE))
   num_shots = weapon->num_charges();
 

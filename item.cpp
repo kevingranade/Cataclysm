@@ -1249,7 +1249,9 @@ void item::next_mode()
 {
  switch(mode) {
  case IF_NULL:
-  if( has_flag(IF_MODE_BURST) )
+  if( has_flag(IF_MODE_BURST_3) )
+    mode = IF_MODE_BURST_3;
+  else if( has_flag(IF_MODE_BURST) )
    mode = IF_MODE_BURST;
   else
    // Enable the first mod with an AUX firing mode.
