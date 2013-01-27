@@ -703,22 +703,21 @@ bool game::do_turn()
 void game::update_bodytemp() // NOTE I didn't do anything with levz, bionics, diseases, or humidity (ie indoor/outdoor)
 {
  // Bodytemp is measured on a scale of 0u to 1000u, where 1u = 0.02C and 500 is 37C
- // TORSO
  int Ctemperature = 10*(temperature - 32) * 5/9; // Converts temperature to Celsius/10!(Wito plans on using degrees Kelvin later)
- int warmth = u.warmth(bp_torso);
  int converging_bodytemp = 500; 
-  
  // Fetch the morale value of wetness for bodywetness 
  for (int i = 0; u.bodywetness == 0 && i < u.morale.size(); i++)
   if( u.morale[i].type == MORALE_WET ) {
    u.bodywetness = u.morale[i].bonus;
   }
  
- if (u.bodytemp < 500) {converging_bodytemp = 500 + 2*(Ctemperature - 250) + warmth*30*(1 + u.bodywetness/50);}
- else converging_bodytemp = 500 + 2*(Ctemperature - 250) + warmth*10*(1 + u.bodywetness/50);
- 
- 
- 
+ // TORSO
+ if (u.bodytemp < 500) {converging_bodytemp = 500 + 2*(Ctemperature - 250) + u.warmth(bp_torso)*30*(1 + u.bodywetness/50);}
+ else converging_bodytemp = 500 + 2*(Ctemperature - 250) + u.warmth(bp_torso)*10*(1 + u.bodywetness/50);
+ // Increment bodytemp
+ unsigned int body_temp_gap = u.bodytemp - converging_bodytemp;
+ if      (u.bodytemp > converging_bodytemp) {u.bodytemp -= 1 + abs(body_temp_gap)/20;}
+ else if (u.bodytemp < converging_bodytemp) {u.bodytemp += 1 + abs(body_temp_gap)/20;}
  // Fatigue
  if (!u.has_disease(DI_SLEEP)) {
       if (u.fatigue > 575) converging_bodytemp -= 100; // Lose 2C due to tiredness
@@ -733,12 +732,6 @@ void game::update_bodytemp() // NOTE I didn't do anything with levz, bionics, di
    else if (veh && veh->part_with_feature (vpart, vpf_seat) >= 0)     u.bodytemp +=  30;
    else	converging_bodytemp -= 50;			 		   // Body drops 1C while sleeping          
  }
- 
- unsigned int body_temp_gap = u.bodytemp - converging_bodytemp;
- 
- if      (u.bodytemp > converging_bodytemp) {u.bodytemp -= 1 + abs(body_temp_gap)/20;}
- else if (u.bodytemp < converging_bodytemp) {u.bodytemp += 1 + abs(body_temp_gap)/20;}
-  
  // Diseases
  if (u.bodytemp < 50) {
     if (u.disease_intensity(DI_COLD) < 3) add_msg("You have severe hypothermia.");
@@ -763,6 +756,17 @@ void game::update_bodytemp() // NOTE I didn't do anything with levz, bionics, di
 } else if (u.bodytemp < 0 || u.bodytemp > 1000) {
     add_msg("You die from too much thermia.");	// This kills the player.. eventually
 }
+ 
+ // HEAD
+ if (u.bodytemp < 500) {converging_bodytemp = 500 + 2*(Ctemperature - 250) + u.warmth(bp_head)*30*(1 + u.bodywetness/50);}
+ else converging_bodytemp = 500 + 2*(Ctemperature - 250) + u.warmth(bp_head)*10*(1 + u.bodywetness/50);
+ // Increment bodytemp
+ unsigned int body_temp_gap = u.bodytemp - converging_bodytemp;
+ if      (u.bodytemp > converging_bodytemp) {u.bodytemp -= 1 + abs(body_temp_gap)/20;}
+ else if (u.bodytemp < converging_bodytemp) {u.bodytemp += 1 + abs(body_temp_gap)/20;}
+ 
+ // FACE
+ u.warmth(bp_eyes) + u.warmth(bp_mouth);
  
  // Testing
  // add_msg("Body temperature (%d) is converging to %d. Bodywetness : %d", u.bodytemp, converging_bodytemp, u.bodywetness);
