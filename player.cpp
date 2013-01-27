@@ -53,6 +53,7 @@ player::player()
  driving_recoil = 0;
  scent = 500;
  health = 0;
+ bodytemp = 500; // This is in arbitrary units
  name = "";
  male = true;
  inv_sorted = true;
@@ -131,6 +132,7 @@ player& player::operator= (const player & rhs)
  thirst = rhs.thirst;
  fatigue = rhs.fatigue;
  health = rhs.health;
+ bodytemp = rhs.bodytemp;
 
  underwater = rhs.underwater;
  oxygen = rhs.oxygen;
@@ -496,7 +498,7 @@ void player::load_info(game *g, std::string data)
          max_power_level >> hunger >> thirst >> fatigue >> stim >>
          pain >> pkill >> radiation >> cash >> recoil >> driving_recoil >>
          inveh >> scent >> moves >> underwater >> dodges_left >> blocks_left >>
-         oxygen >> active_mission >> xp_pool >> male >> health >> styletmp;
+         oxygen >> active_mission >> xp_pool >> male >> health >> bodytemp >> styletmp;
 
  activity.load_info(dump);
  backlog.load_info(dump);
@@ -598,7 +600,7 @@ std::string player::save_info()
          (in_vehicle? 1 : 0) << " " << scent << " " << moves << " " <<
          underwater << " " << dodges_left << " " << blocks_left << " " <<
          oxygen << " " << active_mission << " " << xp_pool << " " << male <<
-         " " << health << " " << style_selected << " " <<
+         " " << health << " " << style_selected << " " << bodytemp << " " <<
          activity.save_info() << " " << backlog.save_info() << " ";
 
  for (int i = 0; i < PF_MAX2; i++)

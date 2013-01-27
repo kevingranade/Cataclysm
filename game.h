@@ -209,6 +209,9 @@ class game
 
   calendar turn;
   signed char temperature;              // The air temperature
+  unsigned int bodytemp;					// The body temperature
+  unsigned int converging_bodytemp;			// Where the bodytemp whats to converge to
+  int bodywetness;				// To help in body temp calculations...
   weather_type weather;			// Weather pattern--SEE weather.h
   char nextinv;	// Determines which letter the next inv item will have
   overmap cur_om;
@@ -341,6 +344,7 @@ class game
   void cleanup_dead();     // Delete any dead NPCs/monsters
   void monmove();          // Monster movement
   void update_skills();    // Degrades practice levels, checks & upgrades skills
+  void update_bodytemp();  // Increments body temperature towards felt air temperature
   void process_events();   // Processes and enacts long-term events
   void process_activity(); // Processes and enacts the player's activity
   void update_weather();   // Updates the temperature and weather patten

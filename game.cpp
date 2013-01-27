@@ -514,6 +514,8 @@ void game::start_game()
  u.dex_cur = u.dex_max;
  nextspawn = int(turn);
  temperature = 65; // Springtime-appropriate?
+ converging_bodytemp = 500; // This is in arbitrary units
+ bodywetness = 0; // This will probably be removed when I get better at coding...
 
 // Put some NPCs in there!
  create_starting_npcs();
@@ -692,11 +694,91 @@ bool game::do_turn()
   refresh();
  }
 
+ if (turn % 10 == 0) {update_bodytemp();}
+ 
  update_skills();
  if (turn % 10 == 0)
   u.update_morale();
  return false;
 }
+
+void game::update_bodytemp() // NOTE I didn't do anything with levz, bionics, diseases, or humidity (ie indoor/outdoor)
+{
+ // Bodytemp is measured on a scale of -500u to +500u where 1u = 0.02C and 0 is 37C
+ // TORSO
+ int Ctemperature = 10*(temperature - 32) * 5/9; // Converts temperature to Celsius/10!(Wito plans on using degrees Kelvin later)
+ int warmth = u.warmth(bp_torso); 
+  
+ // Fetch the morale value of wetness for bodywetness 
+ for (int i = 0; bodywetness == 0 && i < u.morale.size(); i++)
+ if( u.morale[i].type == MORALE_WET ) {
+  bodywetness = u.morale[i].bonus;
+ }
+ 
+ if (u.bodytemp < 500) {converging_bodytemp = 500 + 2*(Ctemperature - 250) + warmth*30*(1 + bodywetness/50);}
+ else converging_bodytemp = 500 + 2*(Ctemperature - 250) + warmth*10*(1 + bodywetness/50);
+ 
+ 
+ 
+ // Fatigue
+ if (!u.has_disease(DI_SLEEP)) {
+      if (u.fatigue > 575) converging_bodytemp -= 100; // Lose 2C due to tiredness
+ else if (u.fatigue > 383) converging_bodytemp -= 66;  // Lose 1.33C
+ else if (u.fatigue > 191) converging_bodytemp -= 22;  // Lose 0.66C
+ } else { vehicle *veh; int vpart;
+		if (m.ter(u.posx, u.posy) == t_bed) 		                  u.bodytemp += 100;
+   else if (m.ter(u.posx, u.posy) == t_makeshift_bed)                 u.bodytemp +=  70;
+   else if (m.tr_at(u.posx, u.posy) == tr_cot)                        u.bodytemp +=  40;
+   else if (m.tr_at(u.posx, u.posy) == tr_rollmat)                    u.bodytemp +=  10;
+   else if (veh && veh->part_with_feature (vpart, vpf_seat) >= 0) u.bodytemp +=  30;
+   else	converging_bodytemp -= 50;			 		   // Body drops 1C while sleeping
+            
+ }
+ 
+ unsigned int body_temp_gap = u.bodytemp - converging_bodytemp;
+ 
+ if      (u.bodytemp > converging_bodytemp) {u.bodytemp -= 1 + abs(body_temp_gap)/20;}
+ else if (u.bodytemp < converging_bodytemp) {u.bodytemp += 1 + abs(body_temp_gap)/20;}
+  
+ /*
+ if  (bodytemp > converging_bodytemp && converging_bodytemp < 370) {bodytemp -= abs(body_temp_gap)/4;} // It is cold, you are getting cold
+ else if (bodytemp < converging_bodytemp && converging_bodytemp > 370) {bodytemp += abs(body_temp_gap)/4;} // It is warm, you are getting warm
+ */
+  
+ // Diseases
+ if (u.bodytemp < 50) {
+    if (u.disease_intensity(DI_COLD) != 3) add_msg("You have severe hypothermia.");
+	u.add_disease(DI_COLD, 11, this, 3, 3); 
+} else if (u.bodytemp < 200) {
+	if (u.disease_intensity(DI_COLD) != 2) add_msg("You have moderate hypothermia.");
+	u.add_disease(DI_COLD, 11, this, 2, 2); 
+} else if (u.bodytemp < 350) {
+	if (u.disease_intensity(DI_COLD) != 1) add_msg("You have mild hypothermia.");
+	u.add_disease(DI_COLD, 11, this, 1, 1); 
+} else if (u.bodytemp > 650) {
+    if (u.disease_intensity(DI_HOT) != 1) add_msg("You have mild hyperthermia.");
+	u.add_disease(DI_HOT, 11, this, 1, 1); 
+} else if (u.bodytemp > 800) {
+    if (u.disease_intensity(DI_HOT) != 2) add_msg("You have moderate hyperthermia.");
+	u.add_disease(DI_HOT, 11, this, 2, 2); 
+	// Player also hallucinates
+} else if (u.bodytemp > 950) {
+    if (u.disease_intensity(DI_HOT) != 3) add_msg("You have severe hyperthermia.");
+	u.add_disease(DI_HOT, 11, this, 3, 3); 
+	// Player also hallucinates
+} else if (u.bodytemp < 0 || u.bodytemp > 1000) {
+    add_msg("You die from too much thermia.");	// This kills the player.. eventually
+}
+ 
+ 
+ // Body temp can reach three levels of low or high. Each level corresponds to the intensity of the disease, and brings with it symptoms.
+ // The disease will last until the player is warmed up enough. Of course, it takes time for the body to warm up ; the higher the max temp, the faster the player warms up.
+ // Remedys like drinking fluids or being near a fire _should_ reduce the intensity, but I am not sure how... perhaps by adding a flat amount to body temp. Hot adds, cold removes.
+ 
+ // Testing
+ add_msg("Body temperature (%d) is converging to %d", u.bodytemp, converging_bodytemp);
+} 
+
 
 void game::update_skills()
 {
@@ -2588,7 +2670,7 @@ void game::draw_ter(int posx, int posy)
   }
  }
  wrefresh(w_terrain);
- if (u.has_disease(DI_VISUALS))
+ if (u.has_disease(DI_VISUALS) || (u.has_disease(DI_HOT) && u.disease_intensity(DI_HOT) != 1))
   hallucinate();
 }
 
