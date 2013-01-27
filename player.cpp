@@ -53,7 +53,6 @@ player::player()
  driving_recoil = 0;
  scent = 500;
  health = 0;
- bodytemp = 500; // This is in arbitrary units
  bodywetness = 0;
  name = "";
  male = true;
@@ -78,6 +77,10 @@ player::player()
  mutation_category_level[0] = 5; // Weigh us towards no category for a bit
  for (int i = 1; i < NUM_MUTATION_CATEGORIES; i++)
   mutation_category_level[i] = 0;
+ 
+ for (int i = 0; i < num_bp; i++) {
+  temp_cur[i] = 500; temp_conv[i] = 500;
+ } 
 }
 
 player::player(const player &rhs)
@@ -133,7 +136,6 @@ player& player::operator= (const player & rhs)
  thirst = rhs.thirst;
  fatigue = rhs.fatigue;
  health = rhs.health;
- bodytemp = rhs.bodytemp;
  bodywetness = rhs.bodywetness;
 
  underwater = rhs.underwater;
@@ -158,6 +160,9 @@ player& player::operator= (const player & rhs)
  for (int i = 0; i < num_hp_parts; i++)
   hp_max[i] = rhs.hp_max[i];
 
+ for (int i = 0; i < num_bp; i++)
+  temp_cur[i] = rhs.temp_cur[i]; 
+  
  morale = rhs.morale;
  xp_pool = rhs.xp_pool;
 
@@ -500,7 +505,8 @@ void player::load_info(game *g, std::string data)
          max_power_level >> hunger >> thirst >> fatigue >> stim >>
          pain >> pkill >> radiation >> cash >> recoil >> driving_recoil >>
          inveh >> scent >> moves >> underwater >> dodges_left >> blocks_left >>
-         oxygen >> active_mission >> xp_pool >> male >> health >> bodytemp >> bodywetness >> styletmp;
+         oxygen >> active_mission >> xp_pool >> male >> health >> bodywetness >> 
+		 styletmp;
 
  activity.load_info(dump);
  backlog.load_info(dump);
@@ -519,6 +525,8 @@ void player::load_info(game *g, std::string data)
 
  for (int i = 0; i < num_hp_parts; i++)
   dump >> hp_cur[i] >> hp_max[i];
+ for (int i = 0; i < num_bp; i++)
+  dump >> temp_cur[i]; 
  for (int i = 0; i < num_skill_types; i++)
   dump >> sklevel[i] >> skexercise[i] >> sklearn[i];
 
@@ -602,8 +610,8 @@ std::string player::save_info()
          (in_vehicle? 1 : 0) << " " << scent << " " << moves << " " <<
          underwater << " " << dodges_left << " " << blocks_left << " " <<
          oxygen << " " << active_mission << " " << xp_pool << " " << male <<
-         " " << health << " "  << bodytemp << " " << bodywetness << " " << style_selected << 
-		 " " << activity.save_info() << " " << backlog.save_info() << " ";
+         " " << health << " "  <<  bodywetness << " " << style_selected << " " << activity.save_info() << 
+		 " " << backlog.save_info() << " ";
 
  for (int i = 0; i < PF_MAX2; i++)
   dump << my_traits[i] << " ";
@@ -613,6 +621,8 @@ std::string player::save_info()
   dump << mutation_category_level[i] << " ";
  for (int i = 0; i < num_hp_parts; i++)
   dump << hp_cur[i] << " " << hp_max[i] << " ";
+ for (int i = 0; i < num_bp; i++)
+  dump << temp_cur[i] << " ";  
  for (int i = 0; i < num_skill_types; i++)
   dump << int(sklevel[i]) << " " << skexercise[i] << " " << sklearn[i] << " ";
 

@@ -158,13 +158,13 @@ void dis_effect(game *g, player &p, disease &dis)
    case 2 :
 	p.int_cur -= 2;
 	p.add_morale(MORALE_HOT, -1, -40);
-	if (one_in(1000 - p.bodytemp/10) ) p.vomit(g);
+	if (one_in(1000 - p.temp_cur[bp_torso]/10) ) p.vomit(g);
 	if (g->turn % 200 == 0) p.thirst++;
 	break;
    case 3 :
 	p.int_cur -= 5;
 	p.add_morale(MORALE_HOT, -2, -60);
-	if (one_in(1000 - p.bodytemp/10) ) p.vomit(g);
+	if (one_in(1000 - p.temp_cur[bp_torso]/10) ) p.vomit(g);
 	if (g->turn % 100 == 0) p.thirst++;
 	break;
   }
@@ -420,7 +420,7 @@ void dis_effect(game *g, player &p, disease &dis)
    g->add_msg("The light wakes you up.");
    dis.duration = 1;
   }
-  if (p.bodytemp < 200 || one_in(p.bodytemp - 200 && p.bodytemp < 400)) {
+  if (p.temp_cur[bp_torso] < 200 || one_in(p.temp_cur[bp_torso] - 200 && p.temp_cur[bp_torso] < 400)) {
    g->add_msg("The cold wakes you up.");
    dis.duration = 1;
   } 
@@ -1085,12 +1085,12 @@ std::string dis_description(disease dis)
 	stream << "Speed -" << 5 << "%;";
 	return stream.str();
    case 2: 
-    stream << "Your body is hot. Occasionally, you will vomit. You vision is blurred.\n";
+    stream << "Your body is hot. You feel nauseated. You vision is blurred.\n";
 	stream << "Speed -" << 10 << "%;";
 	stream << "      Intelligence -" << 2;
 	return stream.str();
    case 3: 
-    stream << "Your body is too hot! Occasionally, you will vomit. Your vision is blurred.\n";
+    stream << "Your body is too hot! You feel nauseated. Your vision is blurred.\n";
 	stream << "Speed -" << 20 << "%;";
 	stream << "      Intelligence -" << 5;
 	return stream.str();

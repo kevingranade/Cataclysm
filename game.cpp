@@ -10,6 +10,7 @@
 #include "options.h"
 #include "mapbuffer.h"
 #include "debug.h"
+#include "bodypart.h"
 
 #include <fstream>
 #include <sstream>
@@ -702,74 +703,62 @@ bool game::do_turn()
 
 void game::update_bodytemp() // NOTE I didn't do anything with levz, bionics, diseases, or humidity (ie indoor/outdoor)
 {
- // Bodytemp is measured on a scale of 0u to 1000u, where 1u = 0.02C and 500 is 37C
+ // Bodytemp is measured on a scale of 0u to 1000u, where 1u = 0.02C and 500u is 37C
+ 
  int Ctemperature = 10*(temperature - 32) * 5/9; // Converts temperature to Celsius/10!(Wito plans on using degrees Kelvin later)
- int converging_bodytemp = 500; 
+ 
  // Fetch the morale value of wetness for bodywetness 
  for (int i = 0; u.bodywetness == 0 && i < u.morale.size(); i++)
   if( u.morale[i].type == MORALE_WET ) {
    u.bodywetness = u.morale[i].bonus;
   }
  
- // TORSO
- if (u.bodytemp < 500) {converging_bodytemp = 500 + 2*(Ctemperature - 250) + u.warmth(bp_torso)*30*(1 + u.bodywetness/50);}
- else converging_bodytemp = 500 + 2*(Ctemperature - 250) + u.warmth(bp_torso)*10*(1 + u.bodywetness/50);
- // Increment bodytemp
- unsigned int body_temp_gap = u.bodytemp - converging_bodytemp;
- if      (u.bodytemp > converging_bodytemp) {u.bodytemp -= 1 + abs(body_temp_gap)/20;}
- else if (u.bodytemp < converging_bodytemp) {u.bodytemp += 1 + abs(body_temp_gap)/20;}
- // Fatigue
- if (!u.has_disease(DI_SLEEP)) {
-      if (u.fatigue > 575) converging_bodytemp -= 100; // Lose 2C due to tiredness
- else if (u.fatigue > 383) converging_bodytemp -= 66;  // Lose 1.33C
- else if (u.fatigue > 191) converging_bodytemp -= 22;  // Lose 0.66C
- } else { 
+ for (int i = 0 ; i < num_bp ; i++){
+  if (u.temp_cur[i] < 500) {u.temp_conv[i] = 500 + 2*(Ctemperature - 250) + u.warmth(body_part(i))*30*(1 + u.bodywetness/50);}
+  else u.temp_conv[i] = 500 + 2*(Ctemperature - 250) + u.warmth(body_part(i))*10*(1 + u.bodywetness/50);
+  if      (u.temp_cur[i] > u.temp_conv[i]) {u.temp_cur[i] -= 1 + abs(u.temp_cur[i] - u.temp_conv[i])/20;}
+  else if (u.temp_cur[i] < u.temp_conv[i]) {u.temp_cur[i] += 1 + abs(u.temp_cur[i] - u.temp_conv[i])/20;}
+ 
+ 
+  // Fatigue
+  if (!u.has_disease(DI_SLEEP)) {
+        if (u.fatigue > 575) u.temp_conv[i] -= 100; // Lose 2C due to tiredness
+   else if (u.fatigue > 383) u.temp_conv[i] -= 66;  // Lose 1.33C
+   else if (u.fatigue > 191) u.temp_conv[i] -= 22;  // Lose 0.66C
+  } else { 
    vehicle *veh; int vpart;
-		if (m.ter(u.posx, u.posy) == t_bed) 		                  u.bodytemp += 100;
-   else if (m.ter(u.posx, u.posy) == t_makeshift_bed)                 u.bodytemp +=  70;
-   else if (m.tr_at(u.posx, u.posy) == tr_cot)                        u.bodytemp +=  40;
-   else if (m.tr_at(u.posx, u.posy) == tr_rollmat)                    u.bodytemp +=  10;
-   else if (veh && veh->part_with_feature (vpart, vpf_seat) >= 0)     u.bodytemp +=  30;
-   else	converging_bodytemp -= 50;			 		   // Body drops 1C while sleeping          
+		if (m.ter(u.posx, u.posy) == t_bed) 		                  u.temp_conv[i] += 100;
+   else if (m.ter(u.posx, u.posy) == t_makeshift_bed)                 u.temp_conv[i] +=  70;
+   else if (m.tr_at(u.posx, u.posy) == tr_cot)                        u.temp_conv[i] +=  40;
+   else if (m.tr_at(u.posx, u.posy) == tr_rollmat)                    u.temp_conv[i] +=  10;
+   else if (veh && veh->part_with_feature (vpart, vpf_seat) >= 0)     u.temp_conv[i] +=  30;
+   else	u.temp_conv[i] -= 50;			 		   // Body drops 1C while sleeping          
+  }
  }
- // Diseases
- if (u.bodytemp < 50) {
+ // Penalties
+ if (u.temp_cur[bp_torso] < 50) {
     if (u.disease_intensity(DI_COLD) < 3) add_msg("You have severe hypothermia.");
 	u.add_disease(DI_COLD, 11, this, 3, 3); 
-} else if (u.bodytemp < 200) {
+} else if (u.temp_cur[bp_torso] < 200) {
 	if (u.disease_intensity(DI_COLD) < 2) add_msg("You have moderate hypothermia.");
 	u.add_disease(DI_COLD, 11, this, 2, 2); 
-} else if (u.bodytemp < 350) {
+} else if (u.temp_cur[bp_torso] < 350) {
 	if (u.disease_intensity(DI_COLD) < 1) add_msg("You have mild hypothermia.");
 	u.add_disease(DI_COLD, 11, this, 1, 1); 
-} else if (u.bodytemp > 650) {
+} else if (u.temp_cur[bp_torso] > 650) {
     if (u.disease_intensity(DI_HOT) < 1) add_msg("You have mild hyperthermia.");
 	u.add_disease(DI_HOT, 11, this, 1, 1); 
-} else if (u.bodytemp > 800) {
+} else if (u.temp_cur[bp_torso] > 800) {
     if (u.disease_intensity(DI_HOT) < 2) add_msg("You have moderate hyperthermia.");
 	u.add_disease(DI_HOT, 11, this, 2, 2); 
 	// Player also hallucinates
-} else if (u.bodytemp > 950) {
+} else if (u.temp_cur[bp_torso] > 950) {
     if (u.disease_intensity(DI_HOT) < 3) add_msg("You have severe hyperthermia.");
 	u.add_disease(DI_HOT, 11, this, 3, 3); 
 	// Player also hallucinates
-} else if (u.bodytemp < 0 || u.bodytemp > 1000) {
+} else if (u.temp_cur[bp_torso] < 0 || u.temp_cur[bp_torso] > 1000) {
     add_msg("You die from too much thermia.");	// This kills the player.. eventually
 }
- 
- // HEAD
- if (u.bodytemp < 500) {converging_bodytemp = 500 + 2*(Ctemperature - 250) + u.warmth(bp_head)*30*(1 + u.bodywetness/50);}
- else converging_bodytemp = 500 + 2*(Ctemperature - 250) + u.warmth(bp_head)*10*(1 + u.bodywetness/50);
- // Increment bodytemp
- unsigned int body_temp_gap = u.bodytemp - converging_bodytemp;
- if      (u.bodytemp > converging_bodytemp) {u.bodytemp -= 1 + abs(body_temp_gap)/20;}
- else if (u.bodytemp < converging_bodytemp) {u.bodytemp += 1 + abs(body_temp_gap)/20;}
- 
- // FACE
- u.warmth(bp_eyes) + u.warmth(bp_mouth);
- 
- // Testing
- // add_msg("Body temperature (%d) is converging to %d. Bodywetness : %d", u.bodytemp, converging_bodytemp, u.bodywetness);
 } 
 
 

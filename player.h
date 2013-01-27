@@ -11,6 +11,7 @@
 #include "inventory.h"
 #include "artifact.h"
 #include "mutation.h"
+#include "bodypart.h"
 #include <vector>
 #include <string>
 
@@ -41,7 +42,7 @@ public:
  bool create(game *g, character_type type, std::string tempname = "");
  int  random_good_trait();
  int  random_bad_trait ();
- void normalize(game *g);	// Starting set up of HP and inventory
+ void normalize(game *g);	// Starting set up of HP and inventory ** and temperature
 // </newcharacter.cpp>
 
  void pick_name(); // Picks a name from NAMES_*
@@ -274,7 +275,7 @@ public:
 // Maximum--i.e. unmodified by disease
  int str_max, dex_max, int_max, per_max;
  int power_level, max_power_level;
- int hunger, thirst, fatigue, health, bodytemp, bodywetness;
+ int hunger, thirst, fatigue, health, bodywetness;
  bool underwater;
  int oxygen;
  unsigned int recoil;
@@ -285,6 +286,8 @@ public:
  int cash;
  int moves;
  int hp_cur[num_hp_parts], hp_max[num_hp_parts];
+ signed int temp_cur[num_bp], temp_conv[num_bp];
+
 
  std::vector<morale_point> morale;
 
