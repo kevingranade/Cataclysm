@@ -274,7 +274,7 @@ public:
 // Maximum--i.e. unmodified by disease
  int str_max, dex_max, int_max, per_max;
  int power_level, max_power_level;
- int hunger, thirst, fatigue, health, bodytemp;
+ int hunger, thirst, fatigue, health, bodytemp, bodywetness;
  bool underwater;
  int oxygen;
  unsigned int recoil;
