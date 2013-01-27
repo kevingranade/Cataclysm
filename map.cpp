@@ -745,29 +745,14 @@ bool map::is_destructable_ter_only(int x, int y)
 
 bool map::is_outside(int x, int y)
 {
- bool out = (
-         ter(x    , y    ) != t_floor && ter(x - 1, y - 1) != t_floor &&
-         ter(x - 1, y    ) != t_floor && ter(x - 1, y + 1) != t_floor &&
-         ter(x    , y - 1) != t_floor && ter(x    , y    ) != t_floor &&
-         ter(x    , y + 1) != t_floor && ter(x + 1, y - 1) != t_floor &&
-         ter(x + 1, y    ) != t_floor && ter(x + 1, y + 1) != t_floor &&
-         ter(x    , y    ) != t_rock_floor && ter(x - 1, y - 1) != t_rock_floor &&
-         ter(x - 1, y    ) != t_rock_floor && ter(x - 1, y + 1) != t_rock_floor &&
-         ter(x    , y - 1) != t_rock_floor && ter(x    , y    ) != t_rock_floor &&
-         ter(x    , y + 1) != t_rock_floor && ter(x + 1, y - 1) != t_rock_floor &&
-         ter(x + 1, y    ) != t_rock_floor && ter(x + 1, y + 1) != t_rock_floor &&
-         ter(x    , y    ) != t_floor_wax &&
-         ter(x - 1, y - 1) != t_floor_wax &&
-         ter(x - 1, y    ) != t_floor_wax &&
-         ter(x - 1, y + 1) != t_floor_wax &&
-         ter(x    , y - 1) != t_floor_wax &&
-         ter(x    , y    ) != t_floor_wax &&
-         ter(x    , y + 1) != t_floor_wax &&
-         ter(x + 1, y - 1) != t_floor_wax &&
-         ter(x + 1, y    ) != t_floor_wax &&
-         ter(x + 1, y + 1) != t_floor_wax &&
-         ter(x,     y    ) != t_bed &&
-         ter(x, y) != t_groundsheet);
+  ter_id terrain;
+  bool out = (ter(x, y) != t_bed && ter(x, y) != t_groundsheet);
+
+ for(int i = -1; out && i <= 1; i++)
+   for(int j = -1; out && j <= 1; j++) {
+    terrain = ter( x + i, y + j );
+    out = (terrain != t_floor && terrain != t_rock_floor && terrain != t_floor_wax);
+   }
  if (out) {
   int vpart;
   vehicle *veh = veh_at (x, y, vpart);
@@ -2784,11 +2769,28 @@ bool map::loadn(game *g, int worldx, int worldy, int gridx, int gridy, bool upda
 //  squares divisible by 2.
   int newmapx = worldx + gridx - ((worldx + gridx) % 2);
   int newmapy = worldy + gridy - ((worldy + gridy) % 2);
+  overmap* this_om = &(g->cur_om);
+
+  // slightly out of bounds? to the east, south, or both?
+  // cur_om is the one containing the upper-left corner of the map
+  if (newmapx >= OMAPX*2){
+     newmapx -= OMAPX*2;
+     this_om = g->om_hori;
+     if (newmapy >= OMAPY*2){
+        newmapy -= OMAPY*2;
+        this_om = g->om_diag;
+     }
+  }
+  else if (newmapy >= OMAPY*2){
+     newmapy -= OMAPY*2;
+     this_om = g->om_vert;
+  }
+
   if (worldx + gridx < 0)
    newmapx = worldx + gridx;
   if (worldy + gridy < 0)
    newmapy = worldy + gridy;
-  tmp_map.generate(g, &(g->cur_om), newmapx, newmapy, int(g->turn));
+  tmp_map.generate(g, this_om, newmapx, newmapy, int(g->turn));
   return false;
  }
  return true;
