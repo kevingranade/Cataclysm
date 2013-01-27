@@ -514,8 +514,7 @@ void game::start_game()
  u.dex_cur = u.dex_max;
  nextspawn = int(turn);
  temperature = 65; // Springtime-appropriate?
- converging_bodytemp = 500; // This is in arbitrary units
- 
+  
 // Put some NPCs in there!
  create_starting_npcs();
 
@@ -706,7 +705,8 @@ void game::update_bodytemp() // NOTE I didn't do anything with levz, bionics, di
  // Bodytemp is measured on a scale of 0u to 1000u, where 1u = 0.02C and 500 is 37C
  // TORSO
  int Ctemperature = 10*(temperature - 32) * 5/9; // Converts temperature to Celsius/10!(Wito plans on using degrees Kelvin later)
- int warmth = u.warmth(bp_torso); 
+ int warmth = u.warmth(bp_torso);
+ int converging_bodytemp = 500; 
   
  // Fetch the morale value of wetness for bodywetness 
  for (int i = 0; u.bodywetness == 0 && i < u.morale.size(); i++)
@@ -731,19 +731,13 @@ void game::update_bodytemp() // NOTE I didn't do anything with levz, bionics, di
    else if (m.tr_at(u.posx, u.posy) == tr_cot)                        u.bodytemp +=  40;
    else if (m.tr_at(u.posx, u.posy) == tr_rollmat)                    u.bodytemp +=  10;
    else if (veh && veh->part_with_feature (vpart, vpf_seat) >= 0)     u.bodytemp +=  30;
-   else	converging_bodytemp -= 50;			 		   // Body drops 1C while sleeping
-            
+   else	converging_bodytemp -= 50;			 		   // Body drops 1C while sleeping          
  }
  
  unsigned int body_temp_gap = u.bodytemp - converging_bodytemp;
  
  if      (u.bodytemp > converging_bodytemp) {u.bodytemp -= 1 + abs(body_temp_gap)/20;}
  else if (u.bodytemp < converging_bodytemp) {u.bodytemp += 1 + abs(body_temp_gap)/20;}
-  
- /*
- if  (bodytemp > converging_bodytemp && converging_bodytemp < 370) {bodytemp -= abs(body_temp_gap)/4;} // It is cold, you are getting cold
- else if (bodytemp < converging_bodytemp && converging_bodytemp > 370) {bodytemp += abs(body_temp_gap)/4;} // It is warm, you are getting warm
- */
   
  // Diseases
  if (u.bodytemp < 50) {
@@ -770,13 +764,8 @@ void game::update_bodytemp() // NOTE I didn't do anything with levz, bionics, di
     add_msg("You die from too much thermia.");	// This kills the player.. eventually
 }
  
- 
- // Body temp can reach three levels of low or high. Each level corresponds to the intensity of the disease, and brings with it symptoms.
- // The disease will last until the player is warmed up enough. Of course, it takes time for the body to warm up ; the higher the max temp, the faster the player warms up.
- // Remedys like drinking fluids or being near a fire _should_ reduce the intensity, but I am not sure how... perhaps by adding a flat amount to body temp. Hot adds, cold removes.
- 
  // Testing
- add_msg("Body temperature (%d) is converging to %d. Bodywetness : %d", u.bodytemp, converging_bodytemp, u.bodywetness);
+ // add_msg("Body temperature (%d) is converging to %d. Bodywetness : %d", u.bodytemp, converging_bodytemp, u.bodywetness);
 } 
 
 

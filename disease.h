@@ -113,18 +113,18 @@ void dis_effect(game *g, player &p, disease &dis)
 
  case DI_COLD:
   switch (dis.intensity) {
-	case 1 : 
-	 p.add_morale(MORALE_COLD, -1, -20);
-	 break;
-	case 2 :
-	 p.dex_cur -= 2;
-	 p.add_morale(MORALE_COLD, -1, -40);
-	 break;
-	case 3 :
-	 p.dex_cur -= 5;
-	 p.add_morale(MORALE_COLD, -2, -60);
-     break;
-	 }
+   case 1 : 
+	p.add_morale(MORALE_COLD, -1, -20);
+	break;
+   case 2 :
+	p.dex_cur -= 2;
+	p.add_morale(MORALE_COLD, -1, -40);
+	break;
+   case 3 :
+	p.dex_cur -= 5;
+	p.add_morale(MORALE_COLD, -2, -60);
+    break;
+  }
 
  case DI_COLD_FACE:
   p.per_cur -= int(dis.duration / 80);
@@ -151,23 +151,23 @@ void dis_effect(game *g, player &p, disease &dis)
 
  case DI_HOT:
   switch (dis.intensity) {
-	case 1 : 
-	 p.add_morale(MORALE_HOT, -1, -20);
-	 if (g->turn % 300 == 0) p.thirst++;
-	 break;
-	case 2 :
-	 p.int_cur -= 2;
-	 p.add_morale(MORALE_HOT, -1, -40);
-	 if (one_in(1000 - p.bodytemp/10) ) p.vomit(g);
-	 if (g->turn % 200 == 0) p.thirst++;
-	 break;
-	case 3 :
-	 p.int_cur -= 5;
-	 p.add_morale(MORALE_HOT, -2, -60);
-	 if (one_in(1000 - p.bodytemp/10) ) p.vomit(g);
-	 if (g->turn % 100 == 0) p.thirst++;
-	 break;
-	 }
+   case 1 : 
+	p.add_morale(MORALE_HOT, -1, -20);
+	if (g->turn % 300 == 0) p.thirst++;
+	break;
+   case 2 :
+	p.int_cur -= 2;
+	p.add_morale(MORALE_HOT, -1, -40);
+	if (one_in(1000 - p.bodytemp/10) ) p.vomit(g);
+	if (g->turn % 200 == 0) p.thirst++;
+	break;
+   case 3 :
+	p.int_cur -= 5;
+	p.add_morale(MORALE_HOT, -2, -60);
+	if (one_in(1000 - p.bodytemp/10) ) p.vomit(g);
+	if (g->turn % 100 == 0) p.thirst++;
+	break;
+  }
 
  case DI_HEATSTROKE:
   p.str_cur -=  2;
@@ -895,14 +895,14 @@ int disease_speed_boost(disease dis)
  switch (dis.type) {
  case DI_COLD:
   switch (dis.intensity) {
-    case 1 : return -5;
-	case 2 : return -10;
-	case 3 : return -20;}
+   case 1 : return -5;
+   case 2 : return -10;
+   case 3 : return -20;}
  case DI_HOT:
   switch (dis.intensity) {
-    case 1 : return -5;
-	case 2 : return -10;
-	case 3 : return -20;}
+   case 1 : return -5;
+   case 2 : return -10;
+   case 3 : return -20;}
  case DI_HEATSTROKE:	return -15;
  case DI_INFECTION:	return -80;
  case DI_SAP:		return -25;
@@ -925,21 +925,21 @@ std::string dis_name(disease dis)
  case DI_NULL:		return "";
  case DI_GLARE:		return "Glare";
  case DI_COLD:		
-   switch (dis.intensity) {
-	case 1: return "Cold";
-	case 2: return "Very Cold";
-	case 3: return "Freezing!";
-	default : return "So cold you're a bug.";}	
+  switch (dis.intensity) {
+   case 1: return "Cold";
+   case 2: return "Very Cold";
+   case 3: return "Freezing!";
+   default : return "So cold you're a bug.";}	
  case DI_COLD_FACE:	return "Cold face";
  case DI_COLD_HANDS:	return "Cold hands";
  case DI_COLD_LEGS:	return "Cold legs";
  case DI_COLD_FEET:	return "Cold feet";
  case DI_HOT:		
-   switch (dis.intensity) {
-	case 1: return "Hot";
-	case 2: return "Very Hot";
-	case 3: return "Too hot!";
-	default : return "So hot you're a bug.";}
+  switch (dis.intensity) {
+   case 1: return "Hot";
+   case 2: return "Very Hot";
+   case 3: return "Too hot!";
+   default : return "So hot you're a bug.";}
  case DI_HEATSTROKE:	return "Heatstroke";
  case DI_FBFACE:	return "Frostbite - Face";
  case DI_FBHANDS:	return "Frostbite - Hands";
@@ -1021,16 +1021,16 @@ std::string dis_description(disease dis)
 
  case DI_COLD:
   switch (dis.intensity) {
-  case 1: 
+   case 1: 
     stream << "Your body is uncomfortably cold.\n";
 	stream << "Speed -" << 5 << "%;";
 	return stream.str();
-  case 2: 
+   case 2: 
     stream << "Your body is cold.\n";
 	stream << "Speed -" << 10 << "%;";
 	stream << "      Dexterity -" << 2;
 	return stream.str();
-  case 3: 
+   case 3: 
     stream << "Your body is freezing!\n";
 	stream << "Speed -" << 20 << "%;";
 	stream << "      Dexterity -" << 5;
@@ -1080,16 +1080,16 @@ std::string dis_description(disease dis)
 
  case DI_HOT:	
   switch (dis.intensity) {
-  case 1: 
+   case 1: 
     stream << "Your body is uncomfortably hot.\n";
 	stream << "Speed -" << 5 << "%;";
 	return stream.str();
-  case 2: 
+   case 2: 
     stream << "Your body is hot. Occasionally, you will vomit. You vision is blurred.\n";
 	stream << "Speed -" << 10 << "%;";
 	stream << "      Intelligence -" << 2;
 	return stream.str();
-  case 3: 
+   case 3: 
     stream << "Your body is too hot! Occasionally, you will vomit. Your vision is blurred.\n";
 	stream << "Speed -" << 20 << "%;";
 	stream << "      Intelligence -" << 5;
