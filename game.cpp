@@ -758,9 +758,8 @@ void game::update_bodytemp() // NOTE I didn't do anything with levz, bionics, di
  } else if (u.temp_cur[bp_torso] < 0 || u.temp_cur[bp_torso] > 1000) {
     add_msg("You die from too much thermia.");	// This kills the player.. eventually
  }
-
-add_msg("head %d eyes %d mouth %d torso %d arms %d hands %d legs %d feet %d", u.temp_cur[0], u.temp_cur[1], u.temp_cur[2], u.temp_cur[3], u.temp_cur[4], u.temp_cur[5], u.temp_cur[6], u.temp_cur[7]);
-
+ // Debugging
+ // add_msg("head %d eyes %d mouth %d torso %d arms %d hands %d legs %d feet %d", u.temp_cur[0], u.temp_cur[1], u.temp_cur[2], u.temp_cur[3], u.temp_cur[4], u.temp_cur[5], u.temp_cur[6], u.temp_cur[7]);
 } 
 
 
