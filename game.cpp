@@ -730,7 +730,7 @@ void game::update_bodytemp() // NOTE I didn't do anything with levz, bionics, di
    else if (m.ter(u.posx, u.posy) == t_makeshift_bed)                 u.temp_conv[i] +=  70;
    else if (m.tr_at(u.posx, u.posy) == tr_cot)                        u.temp_conv[i] +=  40;
    else if (m.tr_at(u.posx, u.posy) == tr_rollmat)                    u.temp_conv[i] +=  10;
-   else if (veh && veh->part_with_feature (vpart, vpf_seat) >= 0)     u.temp_conv[i] +=  30;
+//   else if (veh && veh->part_with_feature (vpart, vpf_seat) >= 0)     u.temp_conv[i] +=  30;
    else	u.temp_conv[i] -= 50;			 		   // Body drops 1C while sleeping          
   }
  }
