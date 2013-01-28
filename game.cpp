@@ -713,13 +713,12 @@ void game::update_bodytemp() // NOTE I didn't do anything with levz, bionics, di
    u.bodywetness = u.morale[i].bonus;
   }
  
+ // Current temperature and converging temperature calculations
  for (int i = 0 ; i < num_bp ; i++){
-  if (u.temp_cur[i] < 500) {u.temp_conv[i] = 500 + 2*(Ctemperature - 250) + u.warmth(body_part(i))*30*(1 + u.bodywetness/50);}
-  else u.temp_conv[i] = 500 + 2*(Ctemperature - 250) + u.warmth(body_part(i))*10*(1 + u.bodywetness/50);
+  if (u.temp_cur[i] < 500) {u.temp_conv[i] = 500 + 2*(Ctemperature - 250) + u.warmth(body_part(i))*3*(1 + u.bodywetness/50);}
+  else u.temp_conv[i] = 500 + 2*(Ctemperature - 250) + u.warmth(body_part(i))*1*(1 + u.bodywetness/50);
   if      (u.temp_cur[i] > u.temp_conv[i]) {u.temp_cur[i] -= 1 + abs(u.temp_cur[i] - u.temp_conv[i])/20;}
   else if (u.temp_cur[i] < u.temp_conv[i]) {u.temp_cur[i] += 1 + abs(u.temp_cur[i] - u.temp_conv[i])/20;}
- 
- 
   // Fatigue
   if (!u.has_disease(DI_SLEEP)) {
         if (u.fatigue > 575) u.temp_conv[i] -= 100; // Lose 2C due to tiredness
@@ -739,26 +738,29 @@ void game::update_bodytemp() // NOTE I didn't do anything with levz, bionics, di
  if (u.temp_cur[bp_torso] < 50) {
     if (u.disease_intensity(DI_COLD) < 3) add_msg("You have severe hypothermia.");
 	u.add_disease(DI_COLD, 11, this, 3, 3); 
-} else if (u.temp_cur[bp_torso] < 200) {
+ } else if (u.temp_cur[bp_torso] < 200) {
 	if (u.disease_intensity(DI_COLD) < 2) add_msg("You have moderate hypothermia.");
 	u.add_disease(DI_COLD, 11, this, 2, 2); 
-} else if (u.temp_cur[bp_torso] < 350) {
+ } else if (u.temp_cur[bp_torso] < 350) {
 	if (u.disease_intensity(DI_COLD) < 1) add_msg("You have mild hypothermia.");
 	u.add_disease(DI_COLD, 11, this, 1, 1); 
-} else if (u.temp_cur[bp_torso] > 650) {
+ } else if (u.temp_cur[bp_torso] > 650) {
     if (u.disease_intensity(DI_HOT) < 1) add_msg("You have mild hyperthermia.");
 	u.add_disease(DI_HOT, 11, this, 1, 1); 
-} else if (u.temp_cur[bp_torso] > 800) {
+ } else if (u.temp_cur[bp_torso] > 800) {
     if (u.disease_intensity(DI_HOT) < 2) add_msg("You have moderate hyperthermia.");
 	u.add_disease(DI_HOT, 11, this, 2, 2); 
 	// Player also hallucinates
-} else if (u.temp_cur[bp_torso] > 950) {
+ } else if (u.temp_cur[bp_torso] > 950) {
     if (u.disease_intensity(DI_HOT) < 3) add_msg("You have severe hyperthermia.");
 	u.add_disease(DI_HOT, 11, this, 3, 3); 
 	// Player also hallucinates
-} else if (u.temp_cur[bp_torso] < 0 || u.temp_cur[bp_torso] > 1000) {
+ } else if (u.temp_cur[bp_torso] < 0 || u.temp_cur[bp_torso] > 1000) {
     add_msg("You die from too much thermia.");	// This kills the player.. eventually
-}
+ }
+
+add_msg("head %d eyes %d mouth %d torso %d arms %d hands %d legs %d feet %d", u.temp_cur[0], u.temp_cur[1], u.temp_cur[2], u.temp_cur[3], u.temp_cur[4], u.temp_cur[5], u.temp_cur[6], u.temp_cur[7]);
+
 } 
 
 
