@@ -8251,6 +8251,9 @@ void game::teleport(player *p)
   p = &u;
  int newx, newy, t, tries = 0;
  bool is_u = (p == &u);
+ int oldx = p->posx;
+ int oldy = p->posy;
+
  p->add_disease(DI_TELEGLOW, 300, this);
  do {
   newx = p->posx + rng(0, SEEX * 2) - SEEX;
@@ -8277,7 +8280,7 @@ void game::teleport(player *p)
    explode_mon(i);
   }
  }
- if (is_u)
+ if (is_u && (oldx != newx || oldy != newy))
   update_map(u.posx, u.posy);
 }
 
