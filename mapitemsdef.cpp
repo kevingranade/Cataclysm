@@ -618,9 +618,8 @@ void game::init_mapitems()
    mapitems[mi_mil_armor],
 	"pants_army", "kevlar", "vest", "mask_gas", "goggles_nv",
 	"helmet_army", "backpack", "UPS_off", "beltrig", "under_armor",
-  "under_armor_fit",
-        "boots", "boots_fit", "pants_army_fit", "armguard_hard",
-  "power_armor_basic",
+ "under_armor_fit", "boots", "boots_fit", "pants_army_fit", "armguard_hard",
+ "power_armor_basic", "power_armor_frame",
 	"helmet_army", "backpack", "UPS_off", "beltrig", NULL);
 
  setvector(
@@ -859,9 +858,8 @@ void game::init_mapitems()
 	"landmine", "grenade", "flashbang", "EMPbomb", "gasbomb",
 	"smokebomb", "UPS_off", "tazer", "c4", "hk_g80", "12mm",
 	"binoculars", "u_shotgun", "beltrig", "pants_army_fit",
- "power_armor_basic", "power_armor_helmet_basic",
+ "power_armor_basic", "power_armor_helmet_basic", "power_armor_frame",
  "spare_mag", "canteen", "jerrycan", "rucksack", "heatpack", NULL);
-
 
  setvector(
    mapitems[mi_science],
@@ -884,7 +882,7 @@ void game::init_mapitems()
 	"plut_cell", "laser_pack", "m249", "v29", "ftk93", "nx17",
 	"conversion_battle", "conversion_sniper", "canister_goo",
 	"mininuke", "portal", "c4", "12mm", "hk_g80",
-  "power_armor_basic", "power_armor_helmet_basic",
+ "power_armor_basic", "power_armor_helmet_basic", "power_armor_frame",
 	"plasma", "plasma_rifle", NULL);
 
  setvector(
