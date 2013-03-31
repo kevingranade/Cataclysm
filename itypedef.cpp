@@ -2055,7 +2055,7 @@ POWER_ARMOR("power_armor_helmet_basic", "basic power armor helmet", 6, 500, C_HA
 A basic helmet, designed for use with power armor. Offers excellent protection from both attacks and environmental hazards.");
 
 POWER_ARMOR("power_armor_frame", "power armor hauling frame", 4, 1000, C_STORE, STEEL, MNULL,
-    8, 12, 1, 1, 4, 0, 0, 0, 0, 200, 0, "\
+    8, 12, 1, 1, 4, 0, 0, 0, 0, 100, 0, "\
 A heavy duty hauling frame designed to interface with power armor.");
 
 // AMMUNITION
