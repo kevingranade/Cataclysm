@@ -1042,8 +1042,8 @@ protected:
  void build_transparency_cache( int zlev );
 public:
  void build_outside_cache( int zlev );
- void build_seen_cache(const tripoint &origin);
 protected:
+ void build_seen_cache(const tripoint &origin);
  void generate_lightmap();
  void apply_character_light( const player &p );
 
@@ -1199,7 +1199,7 @@ private:
  float light_source_buffer[MAPSIZE*SEEX][MAPSIZE*SEEY];
  bool outside_cache[MAPSIZE*SEEX][MAPSIZE*SEEY];
  float transparency_cache[MAPSIZE*SEEX][MAPSIZE*SEEY];
- bool seen_cache[MAPSIZE*SEEX][MAPSIZE*SEEY];
+ float seen_cache[MAPSIZE*SEEX][MAPSIZE*SEEY];
         /**
          * The list of currently loaded submaps. The size of this should not be changed.
          * After calling @ref load or @ref generate, it should only contain non-null pointers.
@@ -1231,10 +1231,11 @@ public:
 };
 
 template<int xx, int xy, int yx, int yy>
-    void castLight( bool (&output_cache)[MAPSIZE*SEEX][MAPSIZE*SEEY],
+    void castLight( float (&output_cache)[MAPSIZE*SEEX][MAPSIZE*SEEY],
                     const float (&input_array)[MAPSIZE*SEEX][MAPSIZE*SEEY],
                     const int offsetX, const int offsetY, const int offsetDistance,
-                    const int row = 1, float start = 1.0f, const float end = 0.0f );
+                    const int row = 1, float start = 1.0f, const float end = 0.0f,
+                    double cumulative_transparency = LIGHT_TRANSPARENCY_OPEN_AIR );
 
 #endif
 
