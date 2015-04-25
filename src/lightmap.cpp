@@ -179,9 +179,7 @@ void map::generate_lightmap()
                                 is_outside(x + dir_x[i], y + dir_y[i])) {
                                 lm[x][y] = natural_light;
 
-                                if (light_transparency(x, y) > LIGHT_TRANSPARENCY_SOLID) {
-                                    apply_light_arc(x, y, dir_d[i], natural_light);
-                                }
+                                apply_light_arc(x, y, dir_d[i], natural_light);
                             }
                         }
                     }
