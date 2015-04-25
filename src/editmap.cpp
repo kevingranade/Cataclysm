@@ -546,10 +546,10 @@ void editmap::update_view(bool update_info)
         if(veh_in >= 0) {
             extras += _(" [vehicle]");
         }
-        if(g->m.has_flag("INDOORS", target.x, target.y)) {
+        if( g->m.has_flag( TFLAG_INDOORS, target.x, target.y ) ) {
             extras += _(" [indoors]");
         }
-        if(g->m.has_flag("SUPPORTS_ROOF", target.x, target.y)) {
+        if( g->m.has_flag( TFLAG_SUPPORTS_ROOF, target.x, target.y ) ) {
             extras += _(" [roof]");
         }
 
@@ -741,10 +741,10 @@ int editmap::edit_ter()
             mvwprintw(w_pickter, 0, 2, "< %s[%d]: %s >", pttype.id.c_str(), sel_ter, pttype.name.c_str());
             mvwprintz(w_pickter, off, 2, c_white, _("movecost %d"), pttype.movecost);
             std::string extras = "";
-            if(pttype.has_flag("INDOORS")) {
+            if( pttype.has_flag( TFLAG_INDOORS ) ) {
                 extras += _("[indoors] ");
             }
-            if(pttype.has_flag("SUPPORTS_ROOF")) {
+            if( pttype.has_flag( TFLAG_SUPPORTS_ROOF ) ) {
                 extras += _("[roof] ");
             }
             wprintw(w_pickter, " %s", extras.c_str());
@@ -796,10 +796,10 @@ int editmap::edit_ter()
             mvwprintw(w_pickter, 0, 2, "< %s[%d]: %s >", pftype.id.c_str(), sel_frn, pftype.name.c_str());
             mvwprintz(w_pickter, off, 2, c_white, _("movecost %d"), pftype.movecost);
             std::string fextras = "";
-            if(pftype.has_flag("INDOORS")) {
+            if( pftype.has_flag( TFLAG_INDOORS ) ) {
                 fextras += _("[indoors] ");
             }
-            if(pftype.has_flag("SUPPORTS_ROOF")) {
+            if( pftype.has_flag( TFLAG_SUPPORTS_ROOF ) ) {
                 fextras += _("[roof] ");
             }
             wprintw(w_pickter, " %s", fextras.c_str());
