@@ -134,9 +134,8 @@ void map::generate_lightmap()
 
     constexpr int dir_x[] = {  0, -1 , 1, 0 };   //    [0]
     constexpr int dir_y[] = { -1,  0 , 0, 1 };   // [1][X][2]
-    constexpr int dir_d[] = { 180, 270, 0, 90 }; //    [3]
+    constexpr int dir_d[] = { 90, 0, 180, 270 }; //    [3]
 
-    const bool  u_is_inside    = !is_outside(g->u.posx(), g->u.posy());
     const float natural_light  = g->natural_light_level();
 
     if (natural_light > LIGHT_SOURCE_BRIGHT) {
@@ -172,14 +171,16 @@ void map::generate_lightmap()
                     // When underground natural_light is 0, if this changes we need to revisit
                     // Only apply this whole thing if the player is inside,
                     // buildings will be shadowed when outside looking in.
-                    if (natural_light > LIGHT_SOURCE_BRIGHT && u_is_inside && !is_outside(x, y)) {
+                    if (natural_light > LIGHT_SOURCE_BRIGHT && !is_outside(x, y)) {
                         // Apply light sources for external/internal divide
                         for(int i = 0; i < 4; ++i) {
                             if (INBOUNDS(x + dir_x[i], y + dir_y[i]) &&
                                 is_outside(x + dir_x[i], y + dir_y[i])) {
                                 lm[x][y] = natural_light;
 
-                                apply_light_arc(x, y, dir_d[i], natural_light);
+                                if (light_transparency(x, y) > LIGHT_TRANSPARENCY_SOLID) {
+                                    apply_light_arc(x, y, dir_d[i], natural_light);
+                                }
                             }
                         }
                     }
@@ -580,7 +581,7 @@ void map::build_seen_cache(const tripoint &origin)
             } else {
                 offsetDistance = 60 - veh->part_info( mirror ).bonus *
                                       veh->parts[mirror].hp / veh->part_info( mirror ).durability;
-                seen_cache[mirror_pos.x][mirror_pos.y] = LIGHT_TRANSPARENCY_CLEAR;
+                seen_cache[mirror_pos.x][mirror_pos.y] = LIGHT_TRANSPARENCY_OPEN_AIR;
             }
 
             // @todo: Factor in the mirror facing and only cast in the
@@ -763,11 +764,6 @@ void map::apply_light_arc(int x, int y, int angle, float luminance, int wideangl
 
     bool lit[LIGHTMAP_CACHE_X][LIGHTMAP_CACHE_Y] {};
 
-    constexpr float lum_mult = 3.0f;
-
-    luminance = luminance * lum_mult;
-
-    int range = LIGHT_RANGE(luminance);
     apply_light_source(x, y, LIGHT_SOURCE_LOCAL, trigdist);
 
     // Normalise (should work with negative values too)
@@ -777,6 +773,7 @@ void map::apply_light_arc(int x, int y, int angle, float luminance, int wideangl
 
     int endx, endy;
     double rad = PI * (double)nangle / 180;
+    int range = LIGHT_RANGE(luminance);
     calc_ray_end(nangle, range, x, y, &endx, &endy);
     apply_light_ray(lit, x, y, endx, endy , luminance, trigdist);
 
@@ -849,9 +846,10 @@ void map::apply_light_ray(bool lit[LIGHTMAP_CACHE_X][LIGHTMAP_CACHE_Y],
         return;
     }
 
-
-    float transparency = LIGHT_TRANSPARENCY_CLEAR;
-    float light = 0.0;
+    float distance = 1.0;
+    float transparency = LIGHT_TRANSPARENCY_OPEN_AIR;
+    const float scaling_factor = (float)rl_dist( sx, sy, ex, ey ) /
+        (float)square_dist( sx, sy, ex, ey );
     int td = 0;
     // TODO: [lightmap] Pull out the common code here rather than duplication
     if (ax > ay) {
@@ -865,28 +863,24 @@ void map::apply_light_ray(bool lit[LIGHTMAP_CACHE_X][LIGHTMAP_CACHE_Y],
             x += dx;
             t += ay;
 
+            // TODO: clamp coordinates to map bounds before this method is called.
             if (INBOUNDS(x, y)) {
                 if (!lit[x][y]) {
                     // Multiple rays will pass through the same squares so we need to record that
                     lit[x][y] = true;
-
-                    // We know x is the longest angle here and squares can ignore the abs calculation
-                    light = 0.0;
-                    if ( trig_brightcalc ) {
-                        td = trig_dist(sx, sy, x, y);
-                        light = luminance / ( td * td );
-                    } else {
-                        light = luminance / ((sx - x) * (sx - x));
-                    }
-                    lm[x][y] = std::max(lm[x][y], light * transparency);
+                    lm[x][y] = std::max(lm[x][y], luminance / (float)exp( transparency * distance ));
                 }
-                transparency *= light_transparency(x, y);
-            }
-
-            if (transparency <= LIGHT_TRANSPARENCY_SOLID) {
+                float current_transparency = light_transparency(x, y);
+                if(current_transparency == LIGHT_TRANSPARENCY_SOLID) {
+                    break;
+                }
+                // Cumulative average of the transparency values encountered.
+                transparency = ((distance - 1.0) * transparency + current_transparency) / distance;
+            } else {
                 break;
             }
 
+            distance += scaling_factor;
         } while(!(x == ex && y == ey));
     } else {
         int t = ax - (ay / 2);
@@ -903,24 +897,19 @@ void map::apply_light_ray(bool lit[LIGHTMAP_CACHE_X][LIGHTMAP_CACHE_Y],
                 if(!lit[x][y]) {
                     // Multiple rays will pass through the same squares so we need to record that
                     lit[x][y] = true;
-
-                    // We know y is the longest angle here and squares can ignore the abs calculation
-                    light = 0.0;
-                    if ( trig_brightcalc ) {
-                        td = trig_dist(sx, sy, x, y);
-                        light = luminance / ( td * td );
-                    } else {
-                        light = luminance / ((sy - y) * (sy - y));
-                    }
-                    lm[x][y] = std::max(lm[x][y], light * transparency);
+                    lm[x][y] = std::max(lm[x][y], luminance / (float)exp( transparency * distance ));
                 }
-                transparency *= light_transparency(x, y);
-            }
-
-            if (transparency <= LIGHT_TRANSPARENCY_SOLID) {
+                float current_transparency = light_transparency(x, y);
+                if(current_transparency == LIGHT_TRANSPARENCY_SOLID) {
+                    break;
+                }
+                // Cumulative average of the transparency values encountered.
+                transparency = ((distance - 1.0) * transparency + current_transparency) / distance;
+            } else {
                 break;
             }
 
+            distance += scaling_factor;
         } while(!(x == ex && y == ey));
     }
 }
