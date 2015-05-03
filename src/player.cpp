@@ -4095,10 +4095,10 @@ float player::active_light() const
 
     lumination = (float)maxlum;
 
-    if ( lumination < 60 && has_active_bionic("bio_flashlight") ) {
-        lumination = 60;
-    } else if ( lumination < 25 && has_artifact_with(AEP_GLOW) ) {
-        lumination = 25;
+    if ( lumination < 20 && has_active_bionic("bio_flashlight") ) {
+        lumination = 20;
+    } else if ( lumination < 10 && has_artifact_with(AEP_GLOW) ) {
+        lumination = 10;
     }
 
     return lumination;
