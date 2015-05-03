@@ -4061,10 +4061,7 @@ bool item::getlight(float & luminance, int & width, int & direction ) const {
  * Returns just the integer
  */
 int item::getlight_emit() const {
-    const int mult = 10; // woo intmath
-    const int chargedrop = 5 * mult; // start dimming at 1/5th charge.
-
-    int lumint = type->light_emission * mult;
+    float lumint = type->light_emission;
 
     if ( lumint == 0 ) {
         return 0;
@@ -4072,14 +4069,12 @@ int item::getlight_emit() const {
     if ( has_flag("CHARGEDIM") && is_tool() && !has_flag("USE_UPS")) {
         it_tool * tool = dynamic_cast<it_tool *>(type);
         int maxcharge = tool->max_charges;
-        if ( maxcharge > 0 ) {
-            lumint = ( type->light_emission * chargedrop * charges ) / maxcharge;
+        // Falloff starts at 1/5 total charge and scales linearly from there to 0.
+        if( maxcharge > 0 && maxcharge / charges > 5 ) {
+            lumint *= charges * 5 / maxcharge;
         }
     }
-    if ( lumint > 4 && lumint < 10 ) {
-        lumint = 10;
-    }
-    return lumint / 10;
+    return lumint;
 }
 
 int item::getlight_emit_active() const
