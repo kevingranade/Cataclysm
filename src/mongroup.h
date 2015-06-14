@@ -74,37 +74,33 @@ struct MonsterGroup {
     bool is_safe; /// Used for @ref mongroup::is_safe()
 };
 
-struct mongroup {
+struct mongroup : public JsonSerializer, public JsonDeserializer {
     mongroup_id type;
-    int posx, posy, posz;
+    tripoint pos;
     unsigned int radius;
     unsigned int population;
-    int tx, ty; //horde target
+    tripoint target; // location the horde is interested in.
     int interest; //interest to target in percents
     bool dying;
     bool horde;
     bool diffuse;   // group size ind. of dist. from center and radius invariant
     mongroup( const mongroup_id& ptype, int pposx, int pposy, int pposz,
-              unsigned int prad, unsigned int ppop )
+              unsigned int prad, unsigned int ppop ) : pos(pposx, pposy, pposz)
     {
         type = ptype;
-        posx = pposx;
-        posy = pposy;
-        posz = pposz;
         radius = prad;
         population = ppop;
-        tx = 0;
-        ty = 0;
         interest = 0;
         dying = false;
         diffuse = false;
         horde = false;
     }
+    mongroup() { }
     bool is_safe() const;
     void set_target(int x, int y)
     {
-        tx = x;
-        ty = y;
+        target.x = x;
+        target.y = y;
     }
     void wander();
     void inc_interest(int inc)
@@ -131,6 +127,11 @@ struct mongroup {
         }
         interest = set;
     }
+    using JsonDeserializer::deserialize;
+    void deserialize(JsonIn &jsin) override;
+
+    using JsonSerializer::serialize;
+    void serialize(JsonOut &jsout) const override;
 };
 
 class MonsterGroupManager
